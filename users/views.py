@@ -35,8 +35,8 @@ class UserViewSet(viewsets.ModelViewSet):
         data = UserSerializer(user).data
         
         # Adicionar informações de roles e permissões
-        data['roles'] = [user.role]
-        data['sectors'] = [user.sector] if user.sector else []
+        data['role'] = user.role
+        data['sector'] = user.sector
         data['permissions'] = user.get_permissions()
         data['is_master_admin'] = user.is_master_admin
         data['is_sector_admin'] = user.is_sector_admin
@@ -124,6 +124,75 @@ class UserViewSet(viewsets.ModelViewSet):
         
         serializer = self.get_serializer(user)
         return Response(serializer.data)
+    
+    def list(self, request, *args, **kwargs):
+        """Lista todos os usuários com suas permissões"""
+        users = User.objects.all()
+        
+        user_data = []
+        for user in users:
+            user_data.append({
+                'id': user.id,
+                'email': user.email,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'is_active': user.is_active,
+                'date_joined': user.date_joined,
+                'last_login': user.last_login,
+                'role': user.role,
+                'sector': user.sector,
+            })
+        
+        return Response(user_data)
+    
+    def update(self, request, *args, **kwargs):
+        """Atualiza permissões do usuário"""
+        user = self.get_object()
+        data = request.data
+        
+        try:
+            with transaction.atomic():
+                # Atualizar status do usuário
+                if 'is_active' in data:
+                    user.is_active = data['is_active']
+                    user.save()
+                
+                # Atualizar roles e setores
+                if 'role' in data:
+                    user.role = data['role']
+                if 'sector' in data:
+                    user.sector = data['sector']
+                
+                user.save()
+                
+                # Log de auditoria
+                AuditLog.log_action(
+                    user=request.user,
+                    action='UPDATE',
+                    obj=user,
+                    payload={'updated_fields': list(data.keys())},
+                    ip_address=request.META.get('REMOTE_ADDR'),
+                    user_agent=request.META.get('HTTP_USER_AGENT'),
+                    url=request.path,
+                    method=request.method
+                )
+                
+                return Response({
+                    'message': 'Usuário atualizado com sucesso',
+                    'user': {
+                        'id': user.id,
+                        'email': user.email,
+                        'first_name': user.first_name,
+                        'last_name': user.last_name,
+                        'is_active': user.is_active,
+                    }
+                })
+                
+        except Exception as e:
+            return Response(
+                {'error': f'Erro ao atualizar usuário: {str(e)}'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 class InviteViewSet(viewsets.ModelViewSet):
@@ -255,23 +324,40 @@ class PublicInviteViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['post'])
     def validate(self, request):
         """Valida um convite público"""
+        print("🔍 DEBUG: PublicInviteViewSet.validate chamado")
+        print(f"🔍 DEBUG: Dados recebidos: {request.data}")
+        print(f"🔍 DEBUG: Headers: {dict(request.headers)}")
+        
         serializer = InvitePublicValidateSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        print(f"🔍 DEBUG: Serializer criado: {serializer.__class__.__name__}")
+        
+        if not serializer.is_valid():
+            print(f"❌ DEBUG: Serializer inválido - Erros: {serializer.errors}")
+            return Response(
+                {'error': 'Dados inválidos', 'details': serializer.errors},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        print(f"✅ DEBUG: Serializer válido - Dados: {serializer.validated_data}")
         
         invite = serializer.validated_data['invite']
+        print(f"✅ DEBUG: Convite encontrado: {invite.id} - {invite.email}")
         
         # Retornar informações mascaradas do convite
         email_parts = invite.email.split('@')
         masked_email = f"{email_parts[0][:2]}***@{email_parts[1]}"
         
-        return Response({
+        response_data = {
             'valid': True,
             'full_name': invite.full_name,
             'email_masked': masked_email,
             'role_display': invite.get_role_code_display(),
             'sector_display': invite.get_sector_code_display() if invite.sector_code else 'Não definido',
             'security_code': invite.security_code  # Incluir o código para uso posterior
-        })
+        }
+        
+        print(f"✅ DEBUG: Resposta enviada: {response_data}")
+        return Response(response_data)
     
     @action(detail=False, methods=['post'])
     def accept(self, request):
