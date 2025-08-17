@@ -155,24 +155,40 @@ class InvitePublicValidateSerializer(serializers.Serializer):
     security_code = serializers.CharField(max_length=8)
     
     def validate(self, attrs):
+        print(f"🔍 DEBUG: InvitePublicValidateSerializer.validate chamado")
+        print(f"🔍 DEBUG: Dados recebidos: {attrs}")
+        
         token = attrs['token']
         security_code = attrs['security_code']
         
+        print(f"🔍 DEBUG: Token: {token}")
+        print(f"🔍 DEBUG: Security code: {security_code}")
+        
         try:
             invite = UserInvite.objects.get(token=token)
+            print(f"✅ DEBUG: Convite encontrado: {invite.id} - {invite.email}")
+            print(f"🔍 DEBUG: Status: {invite.status}")
+            print(f"🔍 DEBUG: Expira em: {invite.expires_at}")
+            print(f"🔍 DEBUG: É expirado: {invite.is_expired}")
         except UserInvite.DoesNotExist:
+            print(f"❌ DEBUG: Token não encontrado: {token}")
             raise serializers.ValidationError("Token de convite inválido.")
         
         if invite.status != UserInvite.StatusChoices.PENDING:
+            print(f"❌ DEBUG: Status inválido: {invite.status}")
             raise serializers.ValidationError("Este convite não está mais válido.")
         
         if invite.is_expired:
+            print(f"❌ DEBUG: Convite expirado")
             invite.expire()  # Marcar como expirado
             raise serializers.ValidationError("Este convite expirou.")
         
         if invite.security_code != security_code:
+            print(f"❌ DEBUG: Código de segurança incorreto")
+            print(f"🔍 DEBUG: Esperado: {invite.security_code}, Recebido: {security_code}")
             raise serializers.ValidationError("Código de segurança incorreto.")
         
+        print(f"✅ DEBUG: Validação bem-sucedida")
         attrs['invite'] = invite
         return attrs
 
