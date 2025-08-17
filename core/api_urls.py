@@ -3,7 +3,7 @@ URLs da API do CiviTec
 """
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from users.views import UserViewSet
+from users.views import UserViewSet, InviteViewSet, PublicInviteViewSet
 from rh.views import EmployeeViewSet, VacationRequestViewSet, PayslipViewSet
 from tributos.views import TaxpayerViewSet, InvoiceViewSet, AssessmentViewSet, BillingViewSet
 from licitacao.views import ProcurementViewSet, ProcPhaseViewSet, ProposalViewSet, AwardViewSet, ContractViewSet, ContractMilestoneViewSet
@@ -14,8 +14,9 @@ from audit.views import AuditLogViewSet
 # Configurar roteador da API
 router = DefaultRouter()
 
-# Usuários
+# Usuários - IMPORTANTE: users deve vir antes de users/invites
 router.register(r'users', UserViewSet)
+router.register(r'invites', InviteViewSet, basename='invites')
 
 # RH
 router.register(r'rh/employees', EmployeeViewSet)
@@ -53,6 +54,12 @@ urlpatterns = [
     
     # URLs de autenticação
     path('auth/', include('users.auth_urls')),
+    
+    # URLs públicas para convites
+    path('public/invites/', include([
+        path('validate/', PublicInviteViewSet.as_view({'post': 'validate'}), name='public-invite-validate'),
+        path('accept/', PublicInviteViewSet.as_view({'post': 'accept'}), name='public-invite-accept'),
+    ])),
     
     # URLs de relatórios específicos
     path('reporting/dashboard-master/', DashboardViewSet.as_view({'get': 'master_dashboard'}), name='master-dashboard'),

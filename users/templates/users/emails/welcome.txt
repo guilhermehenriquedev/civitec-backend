@@ -1,0 +1,20 @@
+CiviTec - Inovação pública, gestão sem papel
+
+Bem-vindo(a), {{ full_name }}!
+
+Sua conta foi criada com sucesso no sistema CiviTec!
+
+Seu perfil foi configurado:
+- Papel: {{ role_display }}
+- Setor: {{ sector_display }}
+
+Agora você pode acessar o sistema com seu e-mail e a senha que você criou.
+
+Para acessar o sistema, visite: {{ frontend_url }}/login
+
+Dica: Guarde suas credenciais em um local seguro e não as compartilhe com ninguém.
+
+---
+Seja bem-vindo(a) à equipe CiviTec!
+
+CiviTec - Prefeituras • RH • Tributos • Licitação • Obras

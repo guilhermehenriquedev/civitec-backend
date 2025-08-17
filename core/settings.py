@@ -184,6 +184,20 @@ SIMPLE_JWT = {
     'JTI_CLAIM': 'jti',
 }
 
+# Email Configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_FROM = 'noreply@civitec.com.br'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = 'guilhermebass27@gmail.com'
+EMAIL_HOST_PASSWORD = 'ttqg uzxp amky cgsg'
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+
+# Invite Configuration
+INVITE_EXPIRES_HOURS = int(os.getenv('INVITE_EXPIRES_HOURS', '72'))
+FRONTEND_BASE_URL = os.getenv('FRONTEND_BASE_URL', 'http://localhost:3000')
+
 # CORS Configuration
 CORS_ALLOWED_ORIGINS = os.getenv('CORS_ORIGINS', 'http://localhost:3000').split(',')
 CORS_ALLOW_CREDENTIALS = True

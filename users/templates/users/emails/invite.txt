@@ -1,0 +1,24 @@
+CiviTec - Inovação pública, gestão sem papel
+
+Olá, {{ full_name }}!
+
+Você recebeu um convite para acessar o sistema CiviTec, a plataforma de gestão pública moderna.
+
+Seu perfil:
+- Papel: {{ role_display }}
+- Setor: {{ sector_display }}
+
+Para criar sua senha de acesso, você precisará do seguinte código de segurança:
+
+{{ security_code }}
+
+Para acessar a tela de criação de senha, clique no link abaixo:
+{{ invite_url }}
+
+IMPORTANTE: Este convite expira em {{ expires_hours }} horas.
+
+---
+Este e-mail foi enviado automaticamente pelo sistema CiviTec.
+Se você não solicitou este convite, ignore esta mensagem.
+
+CiviTec - Prefeituras • RH • Tributos • Licitação • Obras

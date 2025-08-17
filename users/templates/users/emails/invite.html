@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convite CiviTec</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2563eb;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #6b7280;
+            font-size: 16px;
+        }
+        .content {
+            margin-bottom: 30px;
+        }
+        .greeting {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #1f2937;
+        }
+        .info-box {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .security-code {
+            background-color: #dbeafe;
+            border: 2px solid #3b82f6;
+            border-radius: 6px;
+            padding: 15px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .security-code strong {
+            font-size: 24px;
+            color: #1d4ed8;
+            letter-spacing: 2px;
+        }
+        .cta-button {
+            display: inline-block;
+            background-color: #2563eb;
+            color: white;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            transition: background-color 0.3s;
+        }
+        .cta-button:hover {
+            background-color: #1d4ed8;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .badge {
+            display: inline-block;
+            background-color: #f3f4f6;
+            color: #374151;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">CiviTec</div>
+            <div class="subtitle">Inovação pública, gestão sem papel</div>
+        </div>
+        
+        <div class="content">
+            <div class="greeting">Olá, {{ full_name }}!</div>
+            
+            <p>Você recebeu um convite para acessar o sistema <strong>CiviTec</strong>, a plataforma de gestão pública moderna.</p>
+            
+            <div class="info-box">
+                <p><strong>Seu perfil:</strong></p>
+                <p>• <strong>Papel:</strong> {{ role_display }}</p>
+                <p>• <strong>Setor:</strong> {{ sector_display }}</p>
+            </div>
+            
+            <p>Para criar sua senha de acesso, você precisará do seguinte código de segurança:</p>
+            
+            <div class="security-code">
+                <strong>{{ security_code }}</strong>
+            </div>
+            
+            <p>Clique no botão abaixo para acessar a tela de criação de senha:</p>
+            
+            <div style="text-align: center;">
+                <a href="{{ invite_url }}" class="cta-button">
+                    Criar Senha de Acesso
+                </a>
+            </div>
+            
+            <p><strong>Importante:</strong> Este convite expira em <strong>{{ expires_hours }} horas</strong>.</p>
+        </div>
+        
+        <div class="footer">
+            <p>Este e-mail foi enviado automaticamente pelo sistema CiviTec.</p>
+            <p>Se você não solicitou este convite, ignore esta mensagem.</p>
+            
+            <div style="margin-top: 15px;">
+                <span class="badge">Prefeituras</span>
+                <span class="badge">RH</span>
+                <span class="badge">Tributos</span>
+                <span class="badge">Licitação</span>
+                <span class="badge">Obras</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bem-vindo ao CiviTec</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #059669;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #6b7280;
+            font-size: 16px;
+        }
+        .content {
+            margin-bottom: 30px;
+        }
+        .greeting {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #1f2937;
+        }
+        .welcome-box {
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .login-button {
+            display: inline-block;
+            background-color: #059669;
+            color: white;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            transition: background-color 0.3s;
+        }
+        .login-button:hover {
+            background-color: #047857;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .badge {
+            display: inline-block;
+            background-color: #f3f4f6;
+            color: #374151;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">CiviTec</div>
+            <div class="subtitle">Inovação pública, gestão sem papel</div>
+        </div>
+        
+        <div class="content">
+            <div class="greeting">Bem-vindo(a), {{ full_name }}!</div>
+            
+            <p>Sua conta foi criada com sucesso no sistema <strong>CiviTec</strong>!</p>
+            
+            <div class="welcome-box">
+                <p><strong>Seu perfil foi configurado:</strong></p>
+                <p>• <strong>Papel:</strong> {{ role_display }}</p>
+                <p>• <strong>Setor:</strong> {{ sector_display }}</p>
+            </div>
+            
+            <p>Agora você pode acessar o sistema com seu e-mail e a senha que você criou.</p>
+            
+            <div style="text-align: center;">
+                <a href="{{ frontend_url }}/login" class="login-button">
+                    Acessar o Sistema
+                </a>
+            </div>
+            
+            <p><strong>Dica:</strong> Guarde suas credenciais em um local seguro e não as compartilhe com ninguém.</p>
+        </div>
+        
+        <div class="footer">
+            <p>Seja bem-vindo(a) à equipe CiviTec!</p>
+            
+            <div style="margin-top: 15px;">
+                <span class="badge">Prefeituras</span>
+                <span class="badge">RH</span>
+                <span class="badge">Tributos</span>
+                <span class="badge">Licitação</span>
+                <span class="badge">Obras</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

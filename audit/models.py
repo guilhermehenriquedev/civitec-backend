@@ -114,11 +114,17 @@ class AuditLog(models.Model):
         Método de classe para logging de ações que não envolvem objetos específicos
         (ex: login, logout, etc.)
         """
+        # Para ações de usuário, usar o próprio usuário como content_type
+        from django.contrib.contenttypes.models import ContentType
+        user_content_type = ContentType.objects.get_for_model(User)
+        
         return cls.objects.create(
             user=user,
             action=action,
             entity=entity,
             entity_id=entity_id or 0,
+            content_type=user_content_type,
+            object_id=user.id if user else 0,
             payload_json=payload,
             ip_address=ip_address,
             user_agent=user_agent or '',
