@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.db import models
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -162,22 +163,47 @@ class PayslipViewSet(viewsets.ModelViewSet):
     
     def get_queryset(self):
         user = self.request.user
+        queryset = Payslip.objects.none()
         
         # MASTER_ADMIN vê todos os contracheques
         if user.is_master_admin:
-            return Payslip.objects.all()
+            queryset = Payslip.objects.all()
         
         # SECTOR_ADMIN e SECTOR_OPERATOR veem contracheques do RH
-        if user.is_sector_admin or user.is_sector_operator:
+        elif user.is_sector_admin or user.is_sector_operator:
             if user.sector == 'RH':
-                return Payslip.objects.all()
-            return Payslip.objects.none()
+                queryset = Payslip.objects.all()
         
         # EMPLOYEE vê apenas seus próprios contracheques
-        if user.is_employee:
-            return Payslip.objects.filter(employee__user=user)
+        elif user.is_employee:
+            queryset = Payslip.objects.filter(employee__user=user)
         
-        return Payslip.objects.none()
+        # Aplicar filtros de query string
+        employee_id = self.request.query_params.get('employee_id')
+        if employee_id:
+            try:
+                queryset = queryset.filter(employee_id=int(employee_id))
+            except (ValueError, TypeError):
+                pass  # Ignora valores inválidos
+        
+        competencia = self.request.query_params.get('competencia')
+        if competencia:
+            try:
+                # Espera formato YYYY-MM
+                queryset = queryset.filter(competencia__icontains=competencia)
+            except (ValueError, TypeError):
+                pass
+        
+        search = self.request.query_params.get('search')
+        if search:
+            queryset = queryset.filter(
+                models.Q(employee__user__first_name__icontains=search) |
+                models.Q(employee__user__last_name__icontains=search) |
+                models.Q(employee__matricula__icontains=search) |
+                models.Q(competencia__icontains=search)
+            )
+        
+        return queryset
     
     @action(detail=True, methods=['get'], permission_classes=[IsEmployeeSelf])
     def download(self, request, pk=None):
